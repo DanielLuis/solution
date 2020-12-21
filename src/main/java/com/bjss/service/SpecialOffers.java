@@ -8,9 +8,12 @@ import com.bjss.domain.Offer;
 import com.bjss.factory.OffersFactory;
 import com.bjss.util.Util;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * Class to apply any discount on goods
  */
+@Slf4j
 public class SpecialOffers {
 
 	public static final double ZERO = 0.0;
@@ -19,7 +22,7 @@ public class SpecialOffers {
 
 	//Apply and sum all discounts rules
 	public static double applyAndGetSpecialOffers(List<Goods> goods) {
-		if (goods != null && goods.size() > 0) {
+		if (goods != null && !goods.isEmpty()) {
 			final double appleSpecialOffer = appleSpecialOffer(goods);
 			final double soupSpecialOffer = soupSpecialOffer(goods);
 
@@ -36,19 +39,25 @@ public class SpecialOffers {
 	 */
 	static double appleSpecialOffer(List<Goods> goods) {
 
-		final Optional<Offer> appleOffer = offersFactory.getValidOfferByGoods(Goods.APPLES);
+		try {
+			final Optional<Offer> appleOffer = offersFactory.getValidOfferByGoods(Goods.APPLES);
 
-		return appleOffer.map(offer ->
-				goods.stream()
-						.filter(g -> g != null && Goods.APPLES.getName().equalsIgnoreCase(g.getName()))
-						.map(item -> item.getPrice() * offer.getDiscount())
-						.reduce(Double::sum)
-						.map(value -> {
-							Util.writeDiscounts("Apples 10% off: ", value);
-							return value;
-						})
-						.orElse(ZERO)
-		).orElse(ZERO);
+			return appleOffer.map(offer ->
+					goods.stream()
+							.filter(g -> g != null && Goods.APPLES.getName().equalsIgnoreCase(g.getName()))
+							.map(item -> item.getPrice() * offer.getDiscount())
+							.reduce(Double::sum)
+							.map(value -> {
+								Util.writeDiscounts("Apples 10% off: ", value);
+								return value;
+							})
+							.orElse(ZERO)
+			).orElse(ZERO);
+		}
+		catch (Exception e) {
+			log.error("Error when executing method 'appleSpecialOffer' for= {}", goods, e);
+			return 0.0;
+		}
 	}
 
 	/**
@@ -59,27 +68,34 @@ public class SpecialOffers {
 	 */
 	static double soupSpecialOffer(List<Goods> goods) {
 
-		final Optional<Offer> breadOffer = offersFactory.getValidOfferByGoods(Goods.BREAD);
+		try {
+			final Optional<Offer> breadOffer = offersFactory.getValidOfferByGoods(Goods.BREAD);
 
-		return breadOffer.map(offer -> {
-			//Check if the SOUP offer can be applied
-			final boolean hasMoreThanOneSoup = goods.stream()
-					.filter(g -> g != null && Goods.SOUP.getName().equalsIgnoreCase(g.getName()))
-					.count() > 1;
+			return breadOffer.map(offer -> {
+				//Check if the SOUP offer can be applied
+				final boolean hasMoreThanOneSoup = goods.stream()
+						.filter(g -> g != null && Goods.SOUP.getName().equalsIgnoreCase(g.getName()))
+						.count() > 1;
 
-			//If there more than one SOUP in the Basket, I check and apply the discount for one bread
-			if (hasMoreThanOneSoup) {
-				return goods.stream()
-						.filter(g -> Goods.BREAD.getName().equals(g.getName()))
-						.map(bread -> {
-							final double discount = bread.getPrice() * offer.getDiscount();
-							Util.writeDiscounts("One loaf of bread for half price: ", discount);
-							return discount;
-						})
-						.findFirst()
-						.orElse(ZERO);
-			}
-			return ZERO;
-		}).orElse(ZERO);
+				//If there more than one SOUP in the Basket, I check and apply the discount for one bread
+				if (hasMoreThanOneSoup) {
+					return goods.stream()
+							.filter(g -> Goods.BREAD.getName().equals(g.getName()))
+							.map(bread -> {
+								final double discount = bread.getPrice() * offer.getDiscount();
+								Util.writeDiscounts("One loaf of bread for half price: ", discount);
+								return discount;
+							})
+							.findFirst()
+							.orElse(ZERO);
+				}
+				return ZERO;
+			}).orElse(ZERO);
+		}
+		catch (Exception e) {
+			log.error("Error when executing method 'soupSpecialOffer' for= {}", goods, e);
+			return 0.0;
+		}
+
 	}
 }

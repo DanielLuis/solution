@@ -9,6 +9,9 @@ import com.bjss.domain.Goods;
 import com.bjss.service.SpecialOffers;
 import com.bjss.util.Util;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class PriceBasket {
 
 	public static void main(String[] args) {
@@ -47,13 +50,20 @@ public class PriceBasket {
 	 * Sum all prices
 	 */
 	static double getTotalPrice(List<Goods> listGoods) {
-		if (listGoods != null && !listGoods.isEmpty()) {
-			return listGoods.stream()
-					.filter(Objects::nonNull)
-					.mapToDouble(Goods::getPrice)
-					.sum();
+		try {
+			if (listGoods != null && !listGoods.isEmpty()) {
+				return listGoods.stream()
+						.filter(Objects::nonNull)
+						.mapToDouble(Goods::getPrice)
+						.sum();
 
+			} else {
+				return 0.0;
+			}
 		}
-		return 0.0;
+		catch (Exception e) {
+			log.error("Couldn't get total price for = {}", listGoods, e);
+			return 0.0;
+		}
 	}
 }

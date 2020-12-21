@@ -9,12 +9,14 @@ import com.bjss.domain.Goods;
 import com.bjss.domain.Offer;
 
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * I've created this class to be used as a factory of offers to simulate a table where you can create offers and also associate a product to
  * specifics offers
  */
 @Getter
+@Slf4j
 public class OffersFactory {
 
 	/**
@@ -35,6 +37,7 @@ public class OffersFactory {
 
 	/**
 	 * Singleton implementation
+	 *
 	 * @return OffersFactory
 	 */
 	public static OffersFactory getInstance() {
@@ -55,13 +58,20 @@ public class OffersFactory {
 	}
 
 	public Optional<Offer> getValidOfferByGoods(Goods goods) {
-		final LocalDateTime currentDate = LocalDateTime.now();
+		try {
+			final LocalDateTime currentDate = LocalDateTime.now();
 
-		return this.getOfferMap().entrySet()
-				.stream()
-				.filter(productOfferEntry -> productOfferEntry.getKey().equals(goods))
-				.map(Map.Entry::getValue)
-				.filter(offer -> currentDate.isAfter(offer.getStart()) && currentDate.isBefore(offer.getEnd()))
-				.findFirst();
+			return this.getOfferMap().entrySet()
+					.stream()
+					.filter(productOfferEntry -> productOfferEntry.getKey().equals(goods))
+					.map(Map.Entry::getValue)
+					.filter(offer -> currentDate.isAfter(offer.getStart()) && currentDate.isBefore(offer.getEnd()))
+					.findFirst();
+
+		}
+		catch (Exception e) {
+			log.error("Couldn't get valid offer by goods={}", goods, e);
+			return Optional.empty();
+		}
 	}
 }
