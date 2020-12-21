@@ -55,13 +55,13 @@ public class OffersFactory {
 	}
 
 	public Optional<Offer> getValidOfferByGoods(Goods goods) {
-		final LocalDateTime CURRENT_DATE = LocalDateTime.now();
+		final LocalDateTime currentDate = LocalDateTime.now();
 
 		return this.getOfferMap().entrySet()
 				.stream()
 				.filter(productOfferEntry -> productOfferEntry.getKey().equals(goods))
 				.map(Map.Entry::getValue)
-				.filter(offer -> CURRENT_DATE.isAfter(offer.getStart()) && CURRENT_DATE.isBefore(offer.getEnd()))
+				.filter(offer -> currentDate.isAfter(offer.getStart()) && currentDate.isBefore(offer.getEnd()))
 				.findFirst();
 	}
 }

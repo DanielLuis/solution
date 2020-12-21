@@ -20,13 +20,14 @@ public class PriceBasket {
 	 */
 	public static void pricingBasketGoods(List<String> args) {
 
+		if (args == null || args.isEmpty()) {
+			return;
+		}
+
 		final List<Goods> listGoods =
 				args.stream()
 						.map(Goods::findByName)
 						.collect(Collectors.toList());
-
-		//TODO - Should be removed before the release
-		listGoods.forEach(goods -> System.out.println(goods != null ? goods.getName() : "there's a invalid item"));
 
 		double subtotal = getTotalPrice(listGoods);
 
@@ -45,10 +46,14 @@ public class PriceBasket {
 	/**
 	 * Sum all prices
 	 */
-	private static double getTotalPrice(List<Goods> listGoods) {
-		return listGoods.stream()
-				.filter(Objects::nonNull)
-				.mapToDouble(Goods::getPrice)
-				.sum();
+	static double getTotalPrice(List<Goods> listGoods) {
+		if (listGoods != null && !listGoods.isEmpty()) {
+			return listGoods.stream()
+					.filter(Objects::nonNull)
+					.mapToDouble(Goods::getPrice)
+					.sum();
+
+		}
+		return 0.0;
 	}
 }
