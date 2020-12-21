@@ -27,7 +27,7 @@ public class SpecialOffers {
 
 	/**
 	 * Apply the APPLES discount rule
-	 *
+	 * Apples 10% off this week
 	 * @return discount
 	 */
 	private static double appleSpecialOffer(List<Goods> goods) {
@@ -54,7 +54,7 @@ public class SpecialOffers {
 	 * Apply the SOUP discount rule
 	 * Calculate total discount on Bread (Buy 2 tin and get a loaf of bread for a half price)
 	 *
-	 * @return double
+	 * @return discount
 	 */
 	private static double soupSpecialOffer(List<Goods> goods) {
 
