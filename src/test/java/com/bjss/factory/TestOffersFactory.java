@@ -8,7 +8,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.mockito.Spy;
 
 import com.bjss.domain.Goods;
 import com.bjss.domain.Offer;
@@ -16,7 +15,6 @@ import com.bjss.domain.Offer;
 @DisplayName("Test offers factory")
 class TestOffersFactory {
 
-	@Spy
 	private final OffersFactory offersFactory = OffersFactory.getInstance();
 
 	@DisplayName("Test get valid offer by goods")

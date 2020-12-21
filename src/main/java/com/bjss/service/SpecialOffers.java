@@ -18,19 +18,23 @@ public class SpecialOffers {
 	private static final OffersFactory offersFactory = OffersFactory.getInstance();
 
 	//Apply and sum all discounts rules
-	public static double appleSpecialOffers(List<Goods> goods) {
-		final double appleSpecialOffer = appleSpecialOffer(goods);
-		final double soupSpecialOffer = soupSpecialOffer(goods);
+	public static double applyAndGetSpecialOffers(List<Goods> goods) {
+		if (goods != null && goods.size() > 0) {
+			final double appleSpecialOffer = appleSpecialOffer(goods);
+			final double soupSpecialOffer = soupSpecialOffer(goods);
 
-		return appleSpecialOffer + soupSpecialOffer;
+			return appleSpecialOffer + soupSpecialOffer;
+		}
+		return 0.0;
 	}
 
 	/**
 	 * Apply the APPLES discount rule
 	 * Apples 10% off this week
+	 *
 	 * @return discount
 	 */
-	private static double appleSpecialOffer(List<Goods> goods) {
+	static double appleSpecialOffer(List<Goods> goods) {
 
 		final Optional<Offer> appleOffer = offersFactory.getValidOfferByGoods(Goods.APPLES);
 
@@ -40,10 +44,7 @@ public class SpecialOffers {
 						.map(item -> item.getPrice() * offer.getDiscount())
 						.reduce(Double::sum)
 						.map(value -> {
-							if (value > 0) {
-								Util.writeDiscounts("Apples 10% off: ", value);
-								return value;
-							}
+							Util.writeDiscounts("Apples 10% off: ", value);
 							return value;
 						})
 						.orElse(ZERO)
@@ -56,7 +57,7 @@ public class SpecialOffers {
 	 *
 	 * @return discount
 	 */
-	private static double soupSpecialOffer(List<Goods> goods) {
+	static double soupSpecialOffer(List<Goods> goods) {
 
 		final Optional<Offer> breadOffer = offersFactory.getValidOfferByGoods(Goods.BREAD);
 

@@ -32,7 +32,7 @@ public class PriceBasket {
 
 		Util.write("Subtotal: ", subtotal, "");
 
-		double discount = SpecialOffers.appleSpecialOffers(listGoods);
+		double discount = SpecialOffers.applyAndGetSpecialOffers(listGoods);
 
 		double total = subtotal - discount;
 
